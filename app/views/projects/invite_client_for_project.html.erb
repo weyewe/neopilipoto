@@ -1,0 +1,42 @@
+
+<div class="span9 content">
+  <%= create_guide("New Client", 
+        "Enter the client email.").html_safe %>
+  
+  <%= create_breadcrumb(@breadcrumbs).html_safe %>
+  
+  <div class="row-fluid">
+    <div class="span8">
+      <%= simple_form_for(@new_user, :url => execute_invite_client_url(@project) ,
+              :html => {:class => 'form-horizontal' }) do |f| %>
+        <%= f.input :email , :input_html => {:class => "input-xlarge "}, 
+          :hint => "Enter the client's email"%>
+      
+
+        <div class="form-actions">
+          <%= f.button :submit , :class => "btn btn-primary" %>
+
+        </div>
+      <% end %>
+    </div><!--/span-->
+
+    <div class="span4">
+      <table cellpadding="0" cellspacing="0" border="0" 
+            class="table table-striped table-bordered" id="example">
+        <thead>
+          <tr><th>Project Clients: <%= @project.clients.count %></th></tr>
+        </thead>
+        <tbody>
+          <% @project.clients.each do |client| %>
+            <tr>
+              <td><%= client.email %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      
+    </div><!--/span-->
+    
+  </div><!--/row-->
+
+</div><!--/span-->

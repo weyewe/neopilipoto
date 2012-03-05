@@ -1,6 +1,21 @@
 Neopilipoto::Application.routes.draw do
-  devise_for :users
-
+  devise_for :users, :controllers => {:registrations => "registrations"}
+  
+  
+  match 'dashboard'           => 'home#dashboard'  , :as => :dashboard
+  root :to => 'home#dashboard'
+  
+  resources :projects
+  
+=begin
+  Project setup processes
+=end
+  match 'select_project_to_invite_client' => "projects#select_project_to_invite_client", :as => :select_project_to_invite_client
+  match 'select_project_to_invite_collaborator' => "projects#select_project_to_invite_collaborator", :as => :select_project_to_invite_collaborator
+  
+  match 'invite_client_for_project/:project_id' => "projects#invite_client_for_project", :as => :invite_client_for_project
+  match 'execute_invite_client/:project_id' => "projects#execute_invite_client", :as => :execute_invite_client, :method => :post 
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

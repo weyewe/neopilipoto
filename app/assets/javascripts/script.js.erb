@@ -1,0 +1,97 @@
+
+/* All ajax requests are sending authenticty token*/
+$(document).ajaxSend(function(event, request, settings) {
+  if (typeof(AUTH_TOKEN) == "undefined") return;
+  // settings.data is a serialized string like "foo=bar&baz=boink" (or null)
+  settings.data = settings.data || "";
+  settings.data += (settings.data ? "&" : "") + "authenticity_token=" + encodeURIComponent(AUTH_TOKEN);
+});
+
+
+$(document).ready(function(){
+   $('.transloadit-input').change(function(){
+     var $this = $(this);
+     var $form = $this.parents("form");
+     var $submit_button = $(".submit-button", $form);
+     
+     if ($(this).val()) {
+       $submit_button.show();
+       // $('input:submit').attr('disabled',false);
+     }else{
+       $submit_button.hide();
+     }
+   });
+   
+   
+   
+   // assignment related methods 
+   $(".checkbox_tracker").change( function(){
+     var $checkbox = $(this);
+     var after_clicked_value;
+
+     /*
+       Extracting the value of the checkbox, based on the user action
+     */
+     if(   $checkbox.is(":checked")  ) {
+       $checkbox.attr('value', <%= TRUE_CHECK %>);
+       after_clicked_value = <%= TRUE_CHECK %>;
+     }else{
+       $checkbox.attr( 'value', <%= FALSE_CHECK %> );
+        after_clicked_value = <%= FALSE_CHECK %>;
+     }
+
+
+     var checkbox_id = $checkbox.attr("id");
+     var provider_id = checkbox_id.split("-")[0].split("_")[1];
+     var consumer_id = checkbox_id.split("-")[1].split("_")[1];
+
+     var $form = $("#checkbox_form_wrapper form");
+
+     var provider_field = $("#membership_provider");
+     provider_field.attr('value', provider_id);
+     var consumer_field = $("#membership_consumer");
+     consumer_field.attr('value', consumer_id);
+
+     var decision_field = $("#membership_decision");
+     decision_field.attr("value", after_clicked_value )
+
+     if($checkbox.hasClass("single-submit")){
+       $form.trigger('submit');
+     }else {
+
+
+       $checkbox.showLoading();
+
+       $.ajax({
+         url: $form.attr("action"),
+         type: "POST",
+         data: $form.serialize(),
+         dataType: 'script',
+         success: function(response){
+
+           $form.clearForm();
+           $checkbox.hideLoading();
+         }
+       });
+     }
+   });
+   
+   
+});
+
+
+$.fn.clearForm = function() {
+  return this.each(function() {
+    var type = this.type, tag = this.tagName.toLowerCase();
+    if (tag == 'form')
+      return $(':input',this).clearForm();
+    if (type == 'text' || type == 'password' || tag == 'textarea')
+      this.value = '';
+    else if (type == 'checkbox' || type == 'radio')
+      this.checked = false;
+    else if (tag == 'select')
+      this.selectedIndex = -1;
+  });
+};
+
+

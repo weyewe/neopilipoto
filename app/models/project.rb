@@ -1,2 +1,102 @@
 class Project < ActiveRecord::Base
+  
+  # Models  => Role locking is based on user
+  # has_many :project_assignments
+  #  has_many :project_roles, :through => :project_assignments 
+  
+  
+  has_many :project_memberships 
+  has_many :users, :through => :project_memberships 
+  
+  has_many :pictures 
+  
+  
+ validates_numericality_of :picture_select_quota
+ validates_presence_of :title, :picture_select_quota
+ 
+ 
+ attr_accessible :title, :description, :picture_select_quota
+   
+  
+  def members_with_project_role( role_sym )
+    project_role = ProjectRole.find_by_name( PROJECT_ROLE_MAP[role_sym])
+    
+    project_membership_id_list = self.project_memberships.select(:id).map {|x| x.id }
+    
+    
+    ProjectAssignment.includes(:project_membership => :user).find(:all,:conditions => {
+      :project_role_id => project_role.id , 
+      :project_membership_id => project_membership_id_list
+    })
+  end
+  
+  def clients
+    members_with_project_role( :client ).map{|x| x.project_membership.user}
+  end
+  
+  def collaborators
+    members_with_project_role( :collaborator ).map{|x| x.project_membership.user}
+  end
+  
+  
+  
+  
+  def project_owner 
+    User.find_by_id( self.owner_id )
+  end
+  
+  
+  
+  def add_owner( user ) 
+    self.owner_id = user.id
+    self.save 
+    
+    owner_membership = ProjectMembership.create(:user_id => user.id, :project_id => self.id )
+    owner_membership.add_roles([:owner])
+  end
+  
+  def members
+    users_id_list = self.project_memberships.map{|x| x.user_id}
+    User.find(:all, :conditions => {
+      :id => users_id_list 
+    })
+  end
+  
+  
+  def invite_project_collaborator( project_role_sym, email )
+    
+    # project_collaborator = User.find_by_email( email ) 
+    
+    project_collaborator = User.find_or_create_and_confirm(email)
+    
+    if not project_collaborator.valid?
+      puts "It is all nice and smooth over here\n"*5
+      return project_collaborator 
+    else
+      
+      puts "We are inside this shit add project membership\n"*10
+      self.add_project_membership( project_role_sym, project_collaborator )
+      return project_collaborator
+    end
+    
+  end
+  
+  
+  def add_project_membership( project_role_sym, project_collaborator )
+    
+    project_membership = ProjectMembership.find(:first, :conditions => {
+      :user_id => project_collaborator.id ,
+      :project_id => self.id
+    })
+    
+    if project_membership.nil?
+      project_membership = ProjectMembership.create(
+                      :user_id => project_collaborator.id ,
+                      :project_id => self.id 
+                  )
+    end
+                
+    project_membership.add_roles( [project_role_sym] )
+  end
+  
 end

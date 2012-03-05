@@ -29,7 +29,7 @@ gem 'roadie' # for sending email
 
 gem "delayed_job_active_record", "~> 0.2.1" # delayed_job 
 gem "daemons"
-
+gem 'simple_form'
 
 # Gems used only for assets and not required
 # in production environments by default.
