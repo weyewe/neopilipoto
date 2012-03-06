@@ -18,11 +18,12 @@ class ProjectsController < ApplicationController
   
   def select_project_to_invite_client
     select_project_to_invite_user
-    add_breadcrumb "Pick the project", 'root_path'
+    add_breadcrumb "Pick the project", 'select_project_to_invite_client_path'
   end
   
   def select_project_to_invite_collaborator
     select_project_to_invite_user
+    add_breadcrumb "Pick the project", 'select_project_to_invite_collaborator_path'
   end
   
   def invite_client_for_project
@@ -32,6 +33,16 @@ class ProjectsController < ApplicationController
     set_breadcrumb_for @project, 'invite_client_for_project_path' + "(#{@project.id})", 
           "Invite Client for #{@project.title}"
   end
+  
+  
+  def invite_collaborator_for_project
+    invite_user_for_project(params)
+    
+    add_breadcrumb "Pick the project", 'select_project_to_invite_collaborator_path'
+    set_breadcrumb_for @project, 'invite_collaborator_for_project_path' + "(#{@project.id})", 
+          "Invite Collaborator for #{@project.title}"
+  end
+  
   
   def execute_invite_client
     @project = Project.find_by_id( params[:project_id] )
@@ -54,9 +65,31 @@ class ProjectsController < ApplicationController
           
   end
   
-  def invite_collaborator_for_project
-    invite_user_for_project
+  
+  def execute_invite_collaborator
+    @project = Project.find_by_id( params[:project_id] )
+    
+    if params[:user][:email].nil?
+      redirect_to invite_collaborator_for_project_url(@project)
+      return
+    end
+    
+    @new_user = @project.invite_project_collaborator(:collaborator, params[:user][:email])
+    
+    if  @new_user.valid?
+      redirect_to  invite_collaborator_for_project_url(@project)
+    end
+    
+    add_breadcrumb "Pick the project", 'select_project_to_invite_client_path'
+    set_breadcrumb_for @project, 'invite_collaborator_for_project_path' + "(#{@project.id})", 
+          "Invite Collaborator for #{@project.title}"
+          
+          
   end
+  
+  
+  
+  
   
   
   protected

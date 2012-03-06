@@ -319,13 +319,21 @@ module ApplicationHelper
        },
        {
           :title => "Invite Collaborator",
-          :destination_link => "root_url",
+          :destination_link => "select_project_to_invite_collaborator_url",
           :conditions => [
             {
-              :controller => '', 
-              :action => ''
-             }
-            ]
+              :controller => 'projects', 
+              :action => 'select_project_to_invite_collaborator'
+            },
+            {
+              :controller => 'projects',
+              :action => 'invite_collaborator_for_project'
+            },
+            {
+              :controller => 'projects',
+              :action => 'execute_invite_collaborator'
+            }
+          ]
         },
         {
           :title => "Project Update",

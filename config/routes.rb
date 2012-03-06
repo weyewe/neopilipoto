@@ -16,6 +16,9 @@ Neopilipoto::Application.routes.draw do
   match 'invite_client_for_project/:project_id' => "projects#invite_client_for_project", :as => :invite_client_for_project
   match 'execute_invite_client/:project_id' => "projects#execute_invite_client", :as => :execute_invite_client, :method => :post 
   
+  match 'invite_collaborator_for_project/:project_id' => "projects#invite_collaborator_for_project", :as => :invite_collaborator_for_project
+  match 'execute_invite_collaborator/:project_id' => "projects#execute_invite_collaborator", :as => :execute_invite_collaborator, :method => :post
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
