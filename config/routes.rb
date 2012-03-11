@@ -5,19 +5,62 @@ Neopilipoto::Application.routes.draw do
   match 'dashboard'           => 'home#dashboard'  , :as => :dashboard
   root :to => 'home#dashboard'
   
-  resources :projects
+  resources :projects do 
+    resources :pictures
+  end
+  
+  
+  
+  # the commenting for pictures 
+  resources :pictures do 
+    resources :positional_comments
+    resources :comments
+  end
+  
+  
+  
+  # create child comment
+  match 'first_child_comment/picture/:picture_id/comment/:root_comment_id' => "comments#create_first_child_comment", :as => :create_first_child_comment
+  match 'create_child_comment/picture/:picture_id/comment/:root_comment_id' => "comments#create_child_comment", :as => :create_child_comment
   
 =begin
-  Project setup processes
+  Invite Member to the project ( member can be a client or collaborator )
 =end
-  match 'select_project_to_invite_client' => "projects#select_project_to_invite_client", :as => :select_project_to_invite_client
-  match 'select_project_to_invite_collaborator' => "projects#select_project_to_invite_collaborator", :as => :select_project_to_invite_collaborator
+ 
+  match 'select_project_to_invite_member' => "projects#select_project_to_invite_member", :as => :select_project_to_invite_member
+  match 'invite_member_for_project/:project_id' => "projects#invite_member_for_project", :as => :invite_member_for_project
+  match 'execute_project_invitation/:project_id' => "projects#execute_project_invitation" , :as => :execute_project_invitation
   
-  match 'invite_client_for_project/:project_id' => "projects#invite_client_for_project", :as => :invite_client_for_project
-  match 'execute_invite_client/:project_id' => "projects#execute_invite_client", :as => :execute_invite_client, :method => :post 
+=begin
+  Remove Member to the project ( member can be a client or collaborator )
+=end
+
+  match 'select_project_to_remove_member' => "projects#select_project_to_remove_member", :as => :select_project_to_remove_member
+  match 'remove_member_for_project/:project_id' => "projects#remove_member_for_project", :as => :remove_member_for_project
+  match 'execute_member_removal/:project_id' => "projects#execute_member_removal" , :as => :execute_member_removal
+
+=begin
+  Select Active projects to be managed
+=end
+  match 'select_project_to_be_managed' => "projects#select_project_to_be_managed", :as => :select_project_to_be_managed
   
-  match 'invite_collaborator_for_project/:project_id' => "projects#invite_collaborator_for_project", :as => :invite_collaborator_for_project
-  match 'execute_invite_collaborator/:project_id' => "projects#execute_invite_collaborator", :as => :execute_invite_collaborator, :method => :post
+  
+=begin
+  COllaboration process list 
+=end
+  match 'select_project_for_collaboration' => "projects#select_project_for_collaboration" , :as => :select_project_for_collaboration
+
+
+  # for client collaboration 
+  match 'select_pictures_for_project/:project_id' => "pictures#select_pictures_for_project", :as => :select_pictures_for_project
+  match 'execute_select_picture' => "pictures#execute_select_picture", :as => :execute_select_picture
+  match 'execute_project_selection_done' => "projects#execute_project_selection_done", :as => :execute_project_selection_done
+  
+  # finalize the selected picture -> Feedback, edit etc
+  match 'finalize_pictures_for_project/:project_id' => "pictures#finalize_pictures_for_project", :as => :finalize_pictures_for_project
+  match 'show_picture_for_feedback/:picture_id' => "pictures#show_picture_for_feedback", :as => :show_picture_for_feedback
+  # match 'execute_select_picture' => "pictures#execute_select_picture", :as => :execute_select_picture
+  # match 'execute_project_selection_done' => "projects#execute_project_selection_done", :as => :execute_project_selection_done
   
   # The priority is based upon order of creation:
   # first created -> highest priority.

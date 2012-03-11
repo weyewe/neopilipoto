@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120304091307) do
+ActiveRecord::Schema.define(:version => 20120306103256) do
 
   create_table "assignments", :force => true do |t|
     t.integer  "role_id"
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(:version => 20120304091307) do
   create_table "pictures", :force => true do |t|
     t.string   "name"
     t.integer  "revision_id"
-    t.integer  "project_submission_id"
+    t.integer  "project_id"
     t.string   "original_image_url"
     t.string   "index_image_url"
     t.string   "revision_image_url"
@@ -49,16 +49,16 @@ ActiveRecord::Schema.define(:version => 20120304091307) do
     t.integer  "index_image_size"
     t.integer  "revision_image_size"
     t.integer  "display_image_size"
-    t.boolean  "is_deleted",            :default => false
-    t.boolean  "is_selected",           :default => false
-    t.boolean  "is_original",           :default => false
+    t.boolean  "is_deleted",           :default => false
+    t.boolean  "is_selected",          :default => false
+    t.boolean  "is_original",          :default => false
     t.boolean  "is_approved"
     t.integer  "approved_revision_id"
     t.integer  "original_id"
-    t.integer  "score",                 :default => 0
+    t.integer  "score",                :default => 0
     t.integer  "user_id"
-    t.datetime "created_at",                               :null => false
-    t.datetime "updated_at",                               :null => false
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
   end
 
   create_table "positional_comments", :force => true do |t|
@@ -101,6 +101,14 @@ ActiveRecord::Schema.define(:version => 20120304091307) do
     t.boolean  "is_locked",            :default => false
     t.datetime "created_at",                              :null => false
     t.datetime "updated_at",                              :null => false
+    t.boolean  "done_with_selection",  :default => false
+  end
+
+  create_table "revisionships", :force => true do |t|
+    t.integer  "picture_id"
+    t.integer  "revision_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "roles", :force => true do |t|

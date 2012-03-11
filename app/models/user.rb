@@ -34,6 +34,10 @@ class User < ActiveRecord::Base
     new_user.password_confirmation = temporary_password
     new_user.save 
     
+    standard_role = Role.find_by_name("Standard")
+    new_user.roles << standard_role
+    new_user.save 
+    
     return new_user 
     # return new_user 
     # send the project invitation mail 
@@ -98,7 +102,21 @@ class User < ActiveRecord::Base
       return user
     end
   end
-
+  
+  def project_membership_for_project(project)
+    ProjectMembership.find(:first, :conditions => {
+      :project_id => project.id,
+      :user_id => self.id
+    })
+  end
+  
+  
+  def get_all_enlisted_project
+    ProjectMembership.includes(:project).find(:all, :conditions => {
+      :user_id => self.id 
+    }).map{ |x| x.project }
+  end
+  
   
 
   

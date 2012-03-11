@@ -17,6 +17,9 @@ PROJECT_ROLE_MAP = {
   :owner => "Owner"
 }
 
+INVITE_AS_CLIENT = "client"
+INVITE_AS_COLLABORATOR = "collaborator"
+
 
 TRUE_CHECK = 1
 FALSE_CHECK = 0
@@ -51,3 +54,14 @@ EVENT_TYPE  = {
 }
 
 
+
+=begin
+  Images store in amazon s3
+=end
+
+DUMMY_PROFILE_PIC={
+  :medium => "",
+  :small => ""
+}
+
+POSITIONAL_FEEDBACK_MARKER = ''

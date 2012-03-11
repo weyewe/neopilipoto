@@ -12,15 +12,14 @@ class Picture < ActiveRecord::Base
    has_many :revisions, :through => :revisionships
    has_many :inverse_revisionships, :class_name => "Revisionship", :foreign_key => "revision_id"
    has_many :inverse_revisions, :through => :inverse_revisionships, :source => :picture  
-  
-  
-  
-  
-  
-  
- 
-
-
+   
+   attr_protected :is_selected, :is_deleted
+   # t.boolean  "is_deleted",           :default => false
+   #    t.boolean  "is_selected",          :default => false
+   #    t.boolean  "is_original",          :default => false
+   #    t.boolean  "is_approved"
+   #    t.integer  "approved_revision_id"
+   #    t.integer  "original_id"
 
 =begin
   The commenting logic. 
@@ -65,6 +64,23 @@ class Picture < ActiveRecord::Base
   def allow_comment?(user) 
     # for now, we allow everyone
     return true 
+  end
+  
+  def is_selected?
+    self.is_selected == true
+  end
+  
+  def set_selected_value( decision ) 
+    if not self.project.is_picture_selection_done?
+      if decision == TRUE_CHECK and self.project.can_select_more_pic? 
+          self.is_selected = true 
+      end
+    
+      if decision == FALSE_CHECK
+        self.is_selected = false 
+      end
+      self.save
+    end
   end
 
 
@@ -128,7 +144,7 @@ class Picture < ActiveRecord::Base
 
 
   def self.extract_uploads(resize_original, resize_index , resize_show, resize_revision, params, uploads )
-    project_submission = ProjectSubmission.find_by_id(params[:project_submission_id] )
+    project = Project.find_by_id(params[:project_id] )
 
     new_picture = ""
     image_name = ""
@@ -189,7 +205,7 @@ class Picture < ActiveRecord::Base
              :index_image_url    =>   index_image_url      ,
              :revision_image_url =>   revision_image_url   ,
              :display_image_url  =>  display_image_url     ,
-             :project_submission_id => project_submission.id, 
+             :project_id => project.id, 
              :original_image_size    => original_image_size      ,
              :index_image_size       => index_image_size         ,
              :revision_image_size    => revision_image_size      ,
@@ -201,12 +217,12 @@ class Picture < ActiveRecord::Base
         counter =  counter + 1 
 
         #  for the UserActivity timeline event 
-        UserActivity.create_new_entry(EVENT_TYPE[:submit_picture], 
-                          project_submission.user , 
-                          new_picture , 
-                          project_submission.project  )
+        # UserActivity.create_new_entry(EVENT_TYPE[:submit_picture], 
+        #                         project_submission.user , 
+        #                         new_picture , 
+        #                         project_submission.project  )
 
-        project_submission.update_submission_data( new_picture )
+        # project_submission.update_submission_data( new_picture )
       end
     elsif params[:is_original].to_i == REVISION_PICTURE
       original_picture = Picture.find_by_id(params[:original_picture_id])
@@ -227,7 +243,7 @@ class Picture < ActiveRecord::Base
            :index_image_url    =>   index_image_url      ,
            :revision_image_url =>   revision_image_url   ,
            :display_image_url  =>  display_image_url     ,
-           :project_submission_id => project_submission.id, 
+           :project_id => project.id, 
            :original_image_size    => original_image_size      ,
            :index_image_size       => index_image_size         ,
            :revision_image_size    => revision_image_size      ,
@@ -236,13 +252,13 @@ class Picture < ActiveRecord::Base
            :original_id => original_picture.id
       )
 
-      #  for the UserActivity
-       UserActivity.create_new_entry(EVENT_TYPE[:submit_picture_revision], 
-                          project_submission.user , 
-                          new_picture , 
-                          original_picture  )
-
-      project_submission.update_submission_data( new_picture )
+      # #  for the UserActivity
+      #    UserActivity.create_new_entry(EVENT_TYPE[:submit_picture_revision], 
+      #                       project_submission.user , 
+      #                       new_picture , 
+      #                       original_picture  )
+      # 
+      #   project_submission.update_submission_data( new_picture )
     end
 
 

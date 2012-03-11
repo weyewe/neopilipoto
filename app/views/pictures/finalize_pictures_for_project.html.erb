@@ -1,0 +1,44 @@
+
+<div class="span9 content">
+  <%= create_guide("Select Pictures", 
+        "Finalize the project:  <b>#{@project.title}</b>."+ "<br />"+ 
+        "Number of pictures selected: #{@project.picture_select_quota} ").html_safe %>
+  
+ 
+  <%#= create_breadcrumb(@breadcrumbs).html_safe %>
+  
+  
+  <div class="row-fluid">
+  
+  </div><!--/row-->
+
+
+  <!-- display the uploaded image here!  -->
+  <div class="span12"> 
+    <ul class="thumbnails" id="uploaded_image_container">
+      <% @pictures.each do |picture| %>
+        <%= render :partial => "pictures/select_finalize_picture" , :locals => {
+          :picture => picture,
+          :project => @project 
+        }%>
+      <% end %>
+    </ul>
+  </div>
+  
+  
+  
+  
+  
+  
+  
+ 
+  
+  
+  
+  
+  
+  
+  
+</div><!--/span-->
+
+

@@ -8,8 +8,8 @@ class HomeController < ApplicationController
       return 
     end
     
-    if current_user.has_role?(:teacher)
-      redirect_to select_subject_for_project_url 
+    if current_user.has_role?(:standard)
+      redirect_to select_project_for_collaboration_url  
       return
     end
     

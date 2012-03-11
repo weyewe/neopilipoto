@@ -4,7 +4,7 @@ class CreatePictures < ActiveRecord::Migration
       
       t.string   :name
       t.integer  :revision_id
-      t.integer  :project_submission_id
+      t.integer  :project_id
       t.string   :original_image_url
       t.string   :index_image_url
       t.string   :revision_image_url

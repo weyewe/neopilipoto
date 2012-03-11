@@ -18,24 +18,34 @@ class Project < ActiveRecord::Base
  attr_accessible :title, :description, :picture_select_quota
    
   
-  def members_with_project_role( role_sym )
-    project_role = ProjectRole.find_by_name( PROJECT_ROLE_MAP[role_sym])
+  def members_with_project_role( role_sym_array )
+    project_role_id_list= []
+    
+    role_sym_array.each do |role_sym|
+      project_role = ProjectRole.find_by_name( PROJECT_ROLE_MAP[role_sym])
+      project_role_id_list << project_role.id 
+    end
+    # project_role = ProjectRole.find_by_name( PROJECT_ROLE_MAP[role_sym])
     
     project_membership_id_list = self.project_memberships.select(:id).map {|x| x.id }
     
     
     ProjectAssignment.includes(:project_membership => :user).find(:all,:conditions => {
-      :project_role_id => project_role.id , 
+      :project_role_id => project_role_id_list , 
       :project_membership_id => project_membership_id_list
     })
   end
   
   def clients
-    members_with_project_role( :client ).map{|x| x.project_membership.user}
+    members_with_project_role( [:client] ).map{|x| x.project_membership.user}
   end
   
   def collaborators
-    members_with_project_role( :collaborator ).map{|x| x.project_membership.user}
+    members_with_project_role( [:collaborator] ).map{|x| x.project_membership.user}
+  end
+  
+  def members
+    members_with_project_role( [:collaborator, :client] ).map{|x| x.project_membership.user}
   end
   
   
@@ -64,16 +74,16 @@ class Project < ActiveRecord::Base
   
   
   def invite_project_collaborator( project_role_sym, email )
-    
-    # project_collaborator = User.find_by_email( email ) 
-    
     project_collaborator = User.find_or_create_and_confirm(email)
+    
+    if project_collaborator == self.project_owner
+      return project_collaborator
+    end
     
     if not project_collaborator.valid?
       puts "It is all nice and smooth over here\n"*5
       return project_collaborator 
     else
-      
       puts "We are inside this shit add project membership\n"*10
       self.add_project_membership( project_role_sym, project_collaborator )
       return project_collaborator
@@ -98,5 +108,53 @@ class Project < ActiveRecord::Base
                 
     project_membership.add_roles( [project_role_sym] )
   end
+  
+=begin
+  Picture management related
+=end
+  def original_pictures
+    self.pictures.where(:is_original => true ).order("created_at ASC")
+  end
+
+  def original_pictures_id
+    self.pictures.where(:is_original => true ).order("created_at ASC").select(:id).map do |x|
+      x.id
+    end
+  end
+  
+  def first_submission
+    picture_submissions = self.original_pictures
+    if picture_submissions.count == 0 
+      return nil
+    else
+      return picture_submissions.first
+    end
+  end
+  
+  def selected_original_pictures
+    self.original_pictures.includes(:revisions).where(:is_selected => true )
+  end
+  
+  
+  def can_select_more_pic?
+    self.selected_original_pictures.count < self.picture_select_quota 
+  end
+  
+  def set_done_with_pic_selection
+    self.done_with_selection  = true 
+    self.save 
+  end
+  
+  def cancel_done_with_pic_selection
+    self.done_with_selection  = false 
+    self.save 
+  end
+  
+  def is_picture_selection_done?
+    self.done_with_selection == true 
+  end
+  
+  
+  
   
 end

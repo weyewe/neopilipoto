@@ -4,9 +4,8 @@
  * the top of the compiled file, but it's generally better to create a new file per style scope.
  
  *= require bootstrap
- *= require bootstrap_responsive
- *= require datepicker
  *= require style
+ *= require datatables
  *= require showLoading
  *= require_self
 */

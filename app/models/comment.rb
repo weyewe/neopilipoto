@@ -45,4 +45,39 @@ class Comment < ActiveRecord::Base
   def self.find_commentable(commentable_str, commentable_id)
     commentable_str.constantize.find(commentable_id)
   end
+  
+  
+  
+=begin
+  Additional for positional comments 
+=end
+  
+  def create_comment_position( x_start, y_start, x_end, y_end , picture)
+    comment_position = PositionalComment.create(:comment_id => self.id, 
+      :x_start => x_start, 
+      :y_start => y_start,
+      :x_end => x_end,
+      :y_end => y_end,
+      :picture_id => picture.id
+    )
+    
+    # self.delay.send_feedback_notification_email
+    
+    return comment_position
+  end
+  
+  def commented_object 
+    eval("#{self.commentable_type}.find(#{self.commentable_id})")
+  end
+  
+  
+  def self.new_user_activity_for_comment_reply( event_type, author, subject, secondary_subject )
+    UserActivity.create_new_entry(event_type , 
+                        author , 
+                        subject , 
+                        secondary_subject  )
+  end
+  
+  
+  
 end

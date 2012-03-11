@@ -5,6 +5,40 @@ module ApplicationHelper
   PREV_BUTTON_TEXT = " &larr; Prev "
   
   
+  
+=begin
+  For Collaboration process nav, determining the view link for :client and :collaborator 
+=end
+  def extract_relevant_collaboration_link(user, project)
+    project_membership = ProjectMembership.find(:first, :conditions => {
+      :project_id => project.id,
+      :user_id => user.id 
+    })
+    
+    if project_membership.has_role?(:client)
+      if not project.is_picture_selection_done?
+        select_pictures_for_project_url( project  )
+      else
+        finalize_pictures_for_project_url(project)
+      end
+    elsif project_membership.has_role?(:collaborator)
+      
+    elsif project_membership.has_role?(:owner)
+      '#'
+    end
+    
+    
+  end
+  
+  
+  def add_project_closed_class(project)
+    if project.is_picture_selection_done?
+      return "closed-project"
+    else
+      ""
+    end
+  end
+  
 =begin
   For the grade display 
 =end
@@ -190,12 +224,16 @@ module ApplicationHelper
   
   def get_process_nav( symbol, params)
     
-    if symbol == :premium
+    if symbol == :project_setup
       return create_process_nav(PROJECT_SETUP_PROCESS_LIST, params )
     end
     
-    if symbol == :history 
-      return create_process_nav(HISTORY_PROCESS_LIST, params )
+    if symbol == :project_management
+      return create_process_nav(PROJECT_MANAGEMENT_PROCESS_LIST, params )
+    end
+    
+    if symbol == :collaboration 
+      return create_process_nav(COLLABORATION_PROCESS_LIST, params )
     end
     
     if symbol == :teacher
@@ -299,58 +337,110 @@ module ApplicationHelper
 
      },
      {
-       :title => "Invite Client",
-       :destination_link => "select_project_to_invite_client_url",
-       :conditions => [
-         {
-           :controller => 'projects', 
-           :action =>  'select_project_to_invite_client'
-         },
-         {
-           :controller => "projects",
-           :action => "invite_client_for_project"
-         },
-         {
-           :controller => "projects",
-           :action => "execute_invite_client"
-         }
-  
-       ]
-       },
-       {
-          :title => "Invite Collaborator",
-          :destination_link => "select_project_to_invite_collaborator_url",
-          :conditions => [
-            {
-              :controller => 'projects', 
-              :action => 'select_project_to_invite_collaborator'
-            },
-            {
-              :controller => 'projects',
-              :action => 'invite_collaborator_for_project'
-            },
-            {
-              :controller => 'projects',
-              :action => 'execute_invite_collaborator'
-            }
-          ]
+      :title => "Edit Project",
+      :destination_link => "root_url",
+      :conditions => [
+        {
+          :controller => '', 
+          :action => ''
         },
         {
-          :title => "Project Update",
-          :destination_link => "root_url",
-          :conditions => [
-            {
-              :controller => '', 
-              :action => ''
-            },
-            {
-              :controller => '',
-              :action => ''
-            }
-          ]
+          :controller => '',
+          :action => ''
         }
-      ]
-    }
+          ]
+      }
+    ]
+  }
+    
+  PROJECT_MANAGEMENT_PROCESS_LIST = {
+    :header_title => "Project Management",
+    :processes => [
+      {
+        :title => "Active Projects",
+        :destination_link => 'select_project_to_be_managed_url', 
+        :conditions => [
+          {
+            :controller => 'projects',
+            :action => 'select_project_to_be_managed'
+          },
+          {
+            :controller => "pictures",
+            :action => 'new'
+          }
+        ]
+      },
+      {
+        :title => "Invite Member",
+        :destination_link => 'select_project_to_invite_member_url',
+        :conditions => [
+          {
+            :controller => 'projects',
+            :action => 'select_project_to_invite_member'
+          },
+          {
+            :controller => 'projects',
+            :action => 'invite_member_for_project'
+          }
+        ]
+      },
+      {
+        :title => "Remove Member",
+        :destination_link => 'root_url',
+        :conditions => [
+          {
+            :controller => '',
+            :action => ''
+          }
+        ]
+      },
+      {
+        :title => "Past Projects",
+        :destination_link => 'root_url',
+        :conditions => [
+          {
+            :controller => '',
+            :action => ''
+          }
+        ]
+      }
+      
+    ]
+  }
+  
+  
+  COLLABORATION_PROCESS_LIST = {
+    :header_title => "Collaboration",
+    :processes => [
+      {
+        :title => "Select Project",
+        :destination_link => 'select_project_for_collaboration_url', 
+        :conditions => [
+          {
+            :controller => 'projects',
+            :action => 'select_project_for_collaboration'
+          },
+          {
+            :controller => "pictures",
+            :action => 'new'
+          },
+          {
+            :controller => "pictures",
+            :action => "select_pictures_for_project"
+          },
+          {
+            :controller => "pictures",
+            :action => "finalize_pictures_for_project"
+          },
+          {
+            :controller => "pictures",
+            :action => "show_picture_for_feedback"
+          }
+        ]
+      }
+      
+    ]
+  }
     
   HISTORY_PROCESS_LIST = {
     :header_title => "History",
