@@ -19,6 +19,7 @@
             <th>Pictures</th>
             <th>Selection Quota</th>
             <th>Selected Pictures</th>
+            <th>Progress</th>
           </tr>
         </thead>
         <tbody>
@@ -31,7 +32,19 @@
               </td>
               <td><%= project.original_pictures.count %></td>
               <td><%= project.picture_select_quota %></td>
-              <td>6</td>
+              <td><%= project.selected_original_pictures.count %></td>
+              <td>
+                <% project_membership = project.get_project_membership_for(current_user) %>
+                
+                
+                  <% if project.is_picture_selection_done? %>
+                    <span class="label label-info">Finalization</span>
+                  <% else %>
+                    	<span class="label">Select Images</span> 
+                  <% end %>
+                
+                
+              </td>
             </tr>
           <% end %>
           

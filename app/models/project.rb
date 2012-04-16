@@ -109,12 +109,41 @@ class Project < ActiveRecord::Base
     project_membership.add_roles( [project_role_sym] )
   end
   
+  def get_project_membership_for( user )
+    self.project_memberships.where(:user_id => user.id).first
+  end
+  
 =begin
   Picture management related
 =end
+  def nav_original_pictures( only_all_selected )
+    if only_all_selected == true 
+      self.pictures.where(:is_original => true, 
+                          :is_selected => true  ).
+                          order("created_at ASC")
+    else
+      self.pictures.where(:is_original => true ).order("created_at ASC")
+    end
+  end
+  
+  def nav_original_pictures_id( only_all_selected )
+    self.nav_original_pictures(only_all_selected).select(:id).map do |x|
+      x.id
+    end
+  end
+  
+  
+  def selected_original_pictures_count
+    self.pictures.where(:is_original => true, 
+                        :is_deleted => false, 
+                        :is_selected => true 
+     ).count
+  end
+
   def original_pictures
     self.pictures.where(:is_original => true ).order("created_at ASC")
   end
+  
 
   def original_pictures_id
     self.pictures.where(:is_original => true ).order("created_at ASC").select(:id).map do |x|

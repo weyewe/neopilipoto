@@ -13,14 +13,16 @@
   
   
   <div class="row-fluid">
-    <% if not  @project.is_picture_selection_done? %>
-      <%= render :partial => "pictures/notification_for_pressing_finish_selection_button", :locals => {
-        :project => @project 
-      } %>
-    <% else %>
-      <%= render :partial => "pictures/notification_for_finalization", :locals => {
-        :project => @project
-      } %>
+    <% if @project_membership.has_role?(:client )%>
+      <% if not  @project.is_picture_selection_done? %>
+        <%= render :partial => "pictures/notification_for_pressing_finish_selection_button", :locals => {
+          :project => @project 
+        } %>
+      <% else %>
+        <%= render :partial => "pictures/notification_for_finalization", :locals => {
+          :project => @project
+        } %>
+      <% end %>
     <% end %>
     
   </div><!--/row-->
@@ -32,7 +34,8 @@
       <% @pictures.each do |picture| %>
         <%= render :partial => "pictures/select_picture" , :locals => {
           :picture => picture,
-          :project => @project 
+          :project => @project , 
+          :project_membership => @project_membership
         }%>
       <% end %>
     </ul>

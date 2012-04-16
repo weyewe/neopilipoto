@@ -30,10 +30,23 @@
               <td><%= link_to "#{project.title}", new_project_picture_url(project )%></td>
               <td><%= project.original_pictures.count %></td>
               <td><%= project.picture_select_quota %></td>
-              <td>6</td>
-              <td>NO</td>
+              <td><%= project.selected_original_pictures_count %></td>
+              <td>
+                <% if project.done_with_selection == true %>
+                  <span class="label label-success">Yes</span>
+                <% else %>
+                  <span class="label label-important">No</span>
+                <% end %>
+              </td>
+              
               <td>0</td>
-              <td>NO</td>
+              <td>
+                <% if project.is_finalized == true %>
+                  <span class="label label-success">Yes</span>
+                <% else %>
+                  <span class="label label-important">No</span>
+                <% end %>
+              </td>
             </tr>
           <% end %>
           

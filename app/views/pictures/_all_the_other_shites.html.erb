@@ -2,9 +2,9 @@
 
 <% if current_user.is_submission_owner?(@project_submission) %>
 <!-- if it is not approved, revision still can be uploaded  -->
-<% if not @original_picture.any_picture_submission_approved? %>
-  <%= render :partial => "pictures/upload_revision_form"%>
-<% end %>
+  <% if not @original_picture.any_picture_submission_approved? %>
+    <%= render :partial => "pictures/upload_revision_form"%>
+  <% end %>
 
 <% end %>
 

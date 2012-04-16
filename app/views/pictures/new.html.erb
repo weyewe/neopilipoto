@@ -12,7 +12,7 @@
   <div class="row-fluid">
 
     
-      <%= form_for @new_picture, :url => project_pictures_url(@project_submission) , 
+      <%= form_for @new_picture, :url => project_pictures_url(@project) , 
                 :html => {:class=> "well form-search",
                   :id => 'upload_picture' }  do |f| %>
         <%= hidden_field_tag 'is_original', 

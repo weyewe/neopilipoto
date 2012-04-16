@@ -209,11 +209,48 @@ $(document).ready(function() {
    	return false;
    });
    
+   /* Finalize Selection by client */
+   $("form#finalize_selection").live('submit',function(){
+      var $this = $(this);
+      var destination = $(this).attr('action');
+      var $form_container = $this.parent();
+      // find the checked shties 
+      var current_count = parseInt(   $("#selected_pics_count").attr("value")   );
+      var max_selection = parseInt(  $("#max_selection").attr("value")  );
+      if( current_count != max_selection ){
+        alert("You have to select " + max_selection + " pictures. You have only selected " + current_count + " pictures");
+        
+      }else{
+        if(confirm("Are you sure that you want to finalize?")) {
+          $this.showLoading();
+          $.ajax({
+            url: destination,
+            type: "POST",
+            data: $(this).serialize(),
+            dataType: 'script',
+            success: function(response){
+              $this.clearForm();
+              $this.hideLoading();
+              if($this.hasClass("pilipoto-jcrop")){
+                PilipotoJcropApi.release();
+              }
+            }
+          });
+        }else{
+          
+        }
+        
+      }
+      
+      
+    	return false;
+    });
+   
    
    /* AjaxForm, special for grading approval */
    
    $(".grading-button").live('click', function(){
-     console.log("eh, clicked");
+     // console.log("eh, clicked");
      var $this = $(this);
      var $form = $this.parents("form.grading-ajaxform"); 
      var destination = $form.attr('action');
@@ -222,10 +259,10 @@ $(document).ready(function() {
      
      if( $this.attr("id") == "approve_submission" ){
        $("#approval_code").attr('value',  '<%= ACCEPT_SUBMISSION %>' );
-       console.log("The value is " + <%= ACCEPT_SUBMISSION %> )
+       // console.log("The value is " + <%= ACCEPT_SUBMISSION %> )
      }else {
        $("#approval_code").attr('value',  '<%= REJECT_SUBMISSION %>' );
-       console.log("The value is " + <%= REJECT_SUBMISSION %> )
+       // console.log("The value is " + <%= REJECT_SUBMISSION %> )
      }
      
      

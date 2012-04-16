@@ -55,6 +55,9 @@ Neopilipoto::Application.routes.draw do
   match 'select_pictures_for_project/:project_id' => "pictures#select_pictures_for_project", :as => :select_pictures_for_project
   match 'execute_select_picture' => "pictures#execute_select_picture", :as => :execute_select_picture
   match 'execute_project_selection_done' => "projects#execute_project_selection_done", :as => :execute_project_selection_done
+  # approve or reject the final selection 
+  match 'execute_grading/picture/:picture_id' => "pictures#execute_grading", :as => :execute_grading, :method => :post
+  
   
   # finalize the selected picture -> Feedback, edit etc
   match 'finalize_pictures_for_project/:project_id' => "pictures#finalize_pictures_for_project", :as => :finalize_pictures_for_project

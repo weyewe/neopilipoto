@@ -15,18 +15,14 @@ module ApplicationHelper
       :user_id => user.id 
     })
     
-    if project_membership.has_role?(:client)
-      if not project.is_picture_selection_done?
-        select_pictures_for_project_url( project  )
-      else
-        finalize_pictures_for_project_url(project)
-      end
-    elsif project_membership.has_role?(:collaborator)
-      
-    elsif project_membership.has_role?(:owner)
-      '#'
+   
+    if not project.is_picture_selection_done?
+      select_pictures_for_project_url( project  )
+    else
+      finalize_pictures_for_project_url(project)
     end
-    
+   
+  
     
   end
   
@@ -357,7 +353,7 @@ module ApplicationHelper
     :header_title => "Project Management",
     :processes => [
       {
-        :title => "Active Projects",
+        :title => "Upload Images",
         :destination_link => 'select_project_to_be_managed_url', 
         :conditions => [
           {
@@ -419,10 +415,6 @@ module ApplicationHelper
           {
             :controller => 'projects',
             :action => 'select_project_for_collaboration'
-          },
-          {
-            :controller => "pictures",
-            :action => 'new'
           },
           {
             :controller => "pictures",

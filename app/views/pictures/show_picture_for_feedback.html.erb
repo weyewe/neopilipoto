@@ -3,7 +3,7 @@
   <%= create_guide("Analyze Picture", 
         "You can comment <b>on the picture</b>. 
         Just drag the mouse on the desired position, and create comment.").html_safe %>
-  <%#= create_breadcrumb(@breadcrumbs).html_safe %>
+  <%= create_breadcrumb(@breadcrumbs).html_safe %>
   
 
   
@@ -37,8 +37,6 @@
           <%= render :partial => "pictures/positional_comment_form", 
                           :locals => {:picture => @picture}%>
        
-          
-          
           <%= image_tag @picture.display_image_url,  
                 :style => "width:590px;", :id => "target" %>
                 
@@ -92,11 +90,38 @@
     
     
     <!-- Upload new revision, show original picture, and revision list -->
-    <div class="span4">
-      
-       <button data-toggle="button" id="pilipoto-switcher" 
+    <div class="span4" style="padding-top:10px;">
+        
+        <p style="text-align:center;">
+          <button data-toggle="button" id="pilipoto-switcher" 
             class="btn btn-primary waitMode">Turn On Feedback Mode</button>
+        </p>
         <hr />
+        
+        <% if @project_membership.has_role?(:collaborator)  or 
+              @project_membership.has_role?(:owner) %>
+          <!-- if it is not approved, revision still can be uploaded  -->
+          <%= render :partial => "pictures/upload_revision_form"%>
+        <% end %>
+        
+        <% if @project_membership.has_role?(:client) %>
+          <!-- Grading Form -->
+          <%# if current_user.is_allowed_to_grade?(@project_submission) %>
+            <%= render :partial => "pictures/client_picture_approval" %>
+          <%# end %>
+        <% end %>
+        
+        <% if @picture.is_original == false %>
+          <%= render :partial => "pictures/show_original", :locals =>{
+            :original_picture => @original_picture  }%>
+        <% end %>
+
+        <% if @all_revisions.count != 0 %>
+          <%= render :partial => "pictures/revision_list",
+                    :locals => {:all_revisions => @all_revisions, 
+                            :current_display => @picture }%>
+
+        <% end %>
         
         
         <%#= render :partial => "pictures/all_the_other_shites" %>

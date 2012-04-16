@@ -5,9 +5,11 @@
   to tell the owner that you are done. <br />Then, we can start the finalizing these selected pictures! (yeah, we will do some <strong>editing magic</strong> to make it awesome for you).
   
   
-  <%= form_tag execute_project_selection_done_url , :style => "margin-top:20px;" , :class => "ajaxform" do %>
+  <%= form_tag execute_project_selection_done_url , 
+        :style => "margin-top:20px;" ,  
+        :id => "finalize_selection" do %>
     <%= hidden_field_tag 'project_id' , "#{@project.id}"  %>
-    <button href="#" class="btn btn-success">Success</button>
+    <button href="#" class="btn btn-success">I AM DONE</button>
   <% end %>
   
   

@@ -1,11 +1,18 @@
 
 <div class="span9 content">
-  <%= create_guide("Select Pictures", 
-        "Finalize the project:  <b>#{@project.title}</b>."+ "<br />"+ 
-        "Number of pictures selected: #{@project.picture_select_quota} ").html_safe %>
-  
+  <% if @project_membership.has_role?(:client) %>
+    <%= create_guide("Select Pictures", 
+          "Finalize the project:  <b>#{@project.title}</b>."+ "<br />"+ 
+          "Number of pictures selected: #{@project.picture_select_quota} " + "<br />"+ 
+          "You can ask the photographer to do <b>revision</b>, <b>picture edit</b>, and any other fixes").html_safe %>
+  <% elsif @project_membership.has_role?(:collaborator) or
+        @project_membership.has_role?(:owner) %>
+    <%= create_guide("Pictures to be Finalized", 
+          "Project:  <b>#{@project.title}</b>"+ "<br />"+ 
+          "Number of pictures selected: #{@project.picture_select_quota} ").html_safe %>
+  <% end %>
  
-  <%#= create_breadcrumb(@breadcrumbs).html_safe %>
+  <%= create_breadcrumb(@breadcrumbs).html_safe %>
   
   
   <div class="row-fluid">

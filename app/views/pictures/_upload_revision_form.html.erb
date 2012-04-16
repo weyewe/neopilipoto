@@ -1,12 +1,12 @@
 <h3>Upload Revision</h3>
 
 
-<%= form_for Picture.new, :url => project_submission_pictures_url(@project_submission) , 
+<%= form_for Picture.new, :url => project_pictures_url(@project) , 
           :html => {:class=> "well form-search",
             :id => 'upload_revision' }  do |f| %>
   <%= hidden_field_tag 'is_original', 
           REVISION_PICTURE  %>
-  <%= transloadit :potoschool_store_image %>
+  <%= transloadit :neopilipoto_image_store %>
   <%= f.file_field :original_image_url, :class => "input-medium search-query transloadit-input" , 
              :style=>"width:200px;" %>
             <br />

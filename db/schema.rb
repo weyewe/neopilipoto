@@ -11,7 +11,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120306103256) do
+ActiveRecord::Schema.define(:version => 20120416033408) do
+
+  create_table "add_is_finalized_to_projects", :force => true do |t|
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "assignments", :force => true do |t|
     t.integer  "role_id"
@@ -102,6 +107,7 @@ ActiveRecord::Schema.define(:version => 20120306103256) do
     t.datetime "created_at",                              :null => false
     t.datetime "updated_at",                              :null => false
     t.boolean  "done_with_selection",  :default => false
+    t.boolean  "is_finalized",         :default => false
   end
 
   create_table "revisionships", :force => true do |t|

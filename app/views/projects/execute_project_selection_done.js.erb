@@ -1,5 +1,7 @@
 <% new_notification_for_finalizing = 
-  escape_javascript( render :partial => "pictures/notification_for_finalization"  ) %>
+  escape_javascript( render :partial => "pictures/notification_for_finalization" , :locals => {
+    :project => @project 
+  } ) %>
 
 $(document).ready(function(){
   $("#select_picture_notification").replaceWith( '<%= new_notification_for_finalizing %>');

@@ -115,6 +115,35 @@ class Picture < ActiveRecord::Base
   For picture navigation with NEXT and PREV button
 =end
 
+  # we will have 2 kind of next => 
+  # => 1. picture navigation in all uploaded images
+  # => 2. picture navigation in all the selected images 
+  
+  def nav_next_pic( in_all_selected )
+    original_pic = self.original_picture
+    id_list = original_pic.project.nav_original_pictures_id( in_all_selected )
+
+    current_pic_index = id_list.index( original_pic.id )
+    if current_pic_index <  ( id_list.length - 1 )
+      return  Picture.find_by_id( id_list.at ( current_pic_index + 1  ) ).last_revision 
+    else
+      return nil 
+    end
+  end
+  
+  def nav_prev_pic( in_all_selected )
+    original_pic = self.original_picture
+    id_list = original_pic.project.nav_original_pictures_id( in_all_selected )
+
+    current_pic_index = id_list.index( original_pic.id )
+    
+    if current_pic_index > 0 
+      return Picture.find_by_id(  id_list.at( current_pic_index - 1 )   ).last_revision
+    else
+      return nil 
+    end
+  end
+
   def next_pic
     original_pic = self.original_picture
     id_list = original_pic.project_submission.original_pictures_id
