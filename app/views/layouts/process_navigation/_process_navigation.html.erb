@@ -8,6 +8,11 @@
        <%= get_process_nav( :project_setup , params ).html_safe %> 
        <%= get_process_nav( :project_management , params ).html_safe %> 
        <%= get_process_nav( :collaboration , params ).html_safe %> 
+       
+       
+       <% if HYPER_PREMIUM_DEPLOYMENT %>
+         <%= get_process_nav( :marketing , params ).html_safe %> 
+       <% end %>
      <% end %>
      
      

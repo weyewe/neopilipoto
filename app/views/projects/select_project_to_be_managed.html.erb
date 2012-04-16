@@ -21,7 +21,8 @@
             <th>Selected Pictures</th>
             <th>Selection DONE</th>
             <th>Revision</th>
-            <th>Finalization DONE</th>
+            <th>Ready for Finalization?</th>
+            <th>Approved</th>
           </tr>
         </thead>
         <tbody>
@@ -39,13 +40,19 @@
                 <% end %>
               </td>
               
-              <td>0</td>
+              <td><%= project.revisions_count %></td>
+              
               <td>
-                <% if project.is_finalized == true %>
-                  <span class="label label-success">Yes</span>
+                <% if project.ready_to_be_finalized? %>
+                    <span class="label label-success">Yes</span>
                 <% else %>
-                  <span class="label label-important">No</span>
+                    <span class="label label-important">No</span>
                 <% end %>
+              </td>
+                
+            
+              <td>
+                <%= project.approved_selected_files_count %>
               </td>
             </tr>
           <% end %>

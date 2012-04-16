@@ -65,3 +65,6 @@ DUMMY_PROFILE_PIC={
 }
 
 POSITIONAL_FEEDBACK_MARKER = ''
+
+# use this constant to adjust images , premium pilipoto 
+HYPER_PREMIUM_DEPLOYMENT = true

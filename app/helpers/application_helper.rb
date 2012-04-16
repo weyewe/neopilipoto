@@ -232,6 +232,12 @@ module ApplicationHelper
       return create_process_nav(COLLABORATION_PROCESS_LIST, params )
     end
     
+    if symbol == :marketing 
+      return create_process_nav(MARKETING_PROCESS_LIST, params )
+    end
+    
+    
+    
     if symbol == :teacher
       return create_process_nav(TEACHER_PROCESS_LIST, params )
     end
@@ -353,7 +359,7 @@ module ApplicationHelper
     :header_title => "Project Management",
     :processes => [
       {
-        :title => "Upload Images",
+        :title => "Monitor Project",
         :destination_link => 'select_project_to_be_managed_url', 
         :conditions => [
           {
@@ -391,12 +397,12 @@ module ApplicationHelper
         ]
       },
       {
-        :title => "Past Projects",
-        :destination_link => 'root_url',
+        :title => "Finalized Projects",
+        :destination_link => 'show_finalized_projects_url',
         :conditions => [
           {
-            :controller => '',
-            :action => ''
+            :controller => 'projects',
+            :action => 'show_finalized_projects'
           }
         ]
       }
@@ -467,6 +473,43 @@ module ApplicationHelper
       }
     ]
   }
+  
+  
+  MARKETING_PROCESS_LIST = {
+    :header_title => "Page Management",
+    :processes => [
+      {
+        :title => "Homepage Images",
+        :destination_link => "", 
+        :conditions => [
+          {
+            :controller => '',
+            :action => ''
+          },
+          {
+            :controller => '',
+            :action => ''
+          }
+        ]
+      },
+      {
+        :title => "Result Publishing",
+        :destination_link => "",
+        :conditions => [
+          {
+            :controller => '',
+            :action => ''
+          },
+          {
+            :controller => "",
+            :action => ''
+          }
+        ]
+      }
+    ]
+  }
+  
+  
     
     
   TEACHER_PROCESS_LIST = {

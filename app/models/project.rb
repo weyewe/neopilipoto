@@ -174,6 +174,13 @@ class Project < ActiveRecord::Base
       }.count
   end
   
+  def revisions_count
+    self.original_pictures.where{
+          ( is_original.eq  false)  & 
+          ( is_deleted.eq false)
+      }.count
+  end
+  
 =begin
   a = Project.last
   counter = a.original_pictures.where{(approved_revision_id.not_eq nil)}.count
