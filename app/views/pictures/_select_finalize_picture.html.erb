@@ -23,7 +23,13 @@
           <tr>
             <td>Approval</td>
             <td>
-              Pending
+              <% if last_revision.is_approved == true %>
+              	<span class="label label-success">Approved</span>
+              <% elsif last_revision.is_approved == false  %>
+                <span class="label label-important">Rejected</span>
+              <% else %>
+                <span class="label">Pending</span>
+              <% end >%>
             </td>
           </tr>
          

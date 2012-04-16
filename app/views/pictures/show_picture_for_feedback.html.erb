@@ -12,9 +12,9 @@
       <h3> <%= @picture.name %></h3>
       <h4> Uploaded on: <%= @picture.created_at.in_time_zone("Jakarta") %></h4>
       <% if @picture.is_original == true  %>
-        <span class="label">Original Submission</span>
+        <span class="label">Original </span>
       <% else %>
-      	<span class="label label-success">Revision Submission</span>
+      	<span class="label label-success">Revision </span>
       <% end %>
       <hr />
       

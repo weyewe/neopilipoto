@@ -139,10 +139,51 @@ class Project < ActiveRecord::Base
                         :is_selected => true 
      ).count
   end
+  
+  def selected_original_pictures
+    self.pictures.where(:is_original => true, 
+                        :is_deleted => false, 
+                        :is_selected => true 
+     )
+  end
+  
+  def selected_and_approved_original_pictures_count
+    self.pictures.where(:is_original => true, 
+                        :is_deleted => false, 
+                        :is_selected => true ,
+                        :is_approved => true 
+     )
+  end
+
+  def ready_to_be_finalized?
+    # total_selected_pictures = self.selected_original_pictures_count
+    #   # for each count the approved state per each original picture
+    #   total_approved_pictures= self.original_pictures.where{
+    #         ( approved_revision_id.not_eq  nil)  & 
+    #         ( is_deleted.not_eq false)
+    #     }
+    #   
+    
+    self.selected_original_pictures_count == self.approved_selected_files_count
+  end
+  
+  def approved_selected_files_count
+    self.original_pictures.where{
+          ( approved_revision_id.not_eq  nil)  & 
+          ( is_deleted.eq false)
+      }.count
+  end
+  
+=begin
+  a = Project.last
+  counter = a.original_pictures.where{(approved_revision_id.not_eq nil)}.count
+=end
 
   def original_pictures
     self.pictures.where(:is_original => true ).order("created_at ASC")
   end
+  
+
   
 
   def original_pictures_id

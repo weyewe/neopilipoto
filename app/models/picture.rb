@@ -50,6 +50,17 @@ class Picture < ActiveRecord::Base
   def approved_picture
     Picture.find_by_id( self.original_picture.approved_revision_id )
   end
+  
+  def last_approved_revision
+    last_revision_id = self.original_picture.approved_revision_id
+    if last_revision_id.nil?
+      return self.original_picture
+    else
+      return Picture.find_by_id( last_revision_id )
+    end
+  end
+  
+  
 
   def last_revision
     last_revision  = self.original_picture.revisions.last 
@@ -303,7 +314,33 @@ class Picture < ActiveRecord::Base
                         secondary_subject  )
   end
 
+=begin
+  Approval 
+=end
 
+  def set_approval( action ) 
+    if action == ACCEPT_SUBMISSION
+    #  approve the image 
+      self.is_approved = true 
+      self.save
+      
+    # link it to original picture 
+      original_picture = self.original_picture
+      original_picture.approved_revision_id = self.id
+      original_picture.save 
+      
+      
+      # create checker.. if all the selections are approved, send email to the project owner 
+      project= self.project
+      if project.ready_to_be_finalized? 
+        puts "gonna send email 3321. And the picture of the selected"
+        # but, no finalization. finalization required the User to select. 
+      end
+    elsif action == REJECT_SUBMISSION
+      self.is_approved = false
+      self.save
+    end
+  end
 
 
 end

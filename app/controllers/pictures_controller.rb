@@ -139,33 +139,34 @@ class PicturesController < ApplicationController
     # if we are only protecting in the role level, what if there is a corrupted user? 
     # we are doomed 
     @picture = Picture.find_by_id(params[:picture_id])
-    @original_picture = @picture.original_picture
-    @project = @picture.project
+    # @original_picture = @picture.original_picture
+    # @project = @picture.project
     
     # if @project.nil? or not @project.created_by?(current_user)
     #      redirect_to root_url 
     #      return 
     #    end
  
+    @picture.set_approval(  params[:picture][:is_approved].to_i  )
     
-    if params[:picture][:is_approved].to_i == ACCEPT_SUBMISSION
-      @picture.is_approved = true 
-      # @picture.score = params[:picture][:score]
-      @picture.save
-      @original_picture.approved_revision_id = @picture.id 
-      @original_picture.save 
-      # @project_submission.update_score 
-      # @project_submission.update_total_project_score  
-      # total project score only be generated when the project is closed by the teacher. 
-      # the engine will calculate the final value -> sum n submissions score / n
-      
-    elsif params[:picture][:is_approved].to_i == REJECT_SUBMISSION
-      @picture.is_approved = false
-      # @picture.score = params[:picture][:score]
-      @picture.save
-    else
-    end
-    
+    # if params[:picture][:is_approved].to_i == ACCEPT_SUBMISSION
+    #     @picture.is_approved = true 
+    #     # @picture.score = params[:picture][:score]
+    #     @picture.save
+    #     @original_picture.approved_revision_id = @picture.id 
+    #     @original_picture.save 
+    #     # @project_submission.update_score 
+    #     # @project_submission.update_total_project_score  
+    #     # total project score only be generated when the project is closed by the teacher. 
+    #     # the engine will calculate the final value -> sum n submissions score / n
+    #     
+    #   elsif params[:picture][:is_approved].to_i == REJECT_SUBMISSION
+    #     @picture.is_approved = false
+    #     # @picture.score = params[:picture][:score]
+    #     @picture.save
+    #   else
+    #   end
+    #   
     # Picture.new_user_activity_for_grading(
     #     EVENT_TYPE[:grade_picture],
     #     current_user ,  #this is the teacher
@@ -173,6 +174,7 @@ class PicturesController < ApplicationController
     #     @picture.project_submission.project   #the project where that picture belongs to 
     #   )
     
+    # create checking for the whole selections.. if all of them are approved, send notification to the owner 
     
     respond_to do |format|
       format.html {  redirect_to project_submission_picture_path(@picture ,@picture) }
